@@ -84,7 +84,19 @@ namespace AzAcme.Cli.Commands
             var totalTime = attempts * delaySeconds;
             
             this.logger.LogInformation($"Waiting for DNS records to be verified (up to {totalTime} seconds).");
+            this.logger.LogInformation("Waiting for DNS propogation");
 
+            var delay = Task.Delay(TimeSpan.FromSeconds(30));
+            var seconds = 30; //Counting down
+
+            //Wait for DNS records to propagate pre-verification
+            while (!delay.IsCompleted)
+            {
+                Console.WriteLine($"Waiting for {seconds} seconds...");
+                seconds--;
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            }
             try
             {
                 // Wait while showing live update table.
